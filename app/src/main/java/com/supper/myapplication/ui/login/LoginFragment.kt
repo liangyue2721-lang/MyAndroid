@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.supper.myapplication.MainActivity
@@ -29,11 +30,20 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
+        viewModel.loginResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                val intent = Intent(requireActivity(), MainActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            } else {
+                Toast.makeText(requireContext(), "Username and password cannot be empty", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         binding.loginButton.setOnClickListener {
-            // TODO: Implement login logic
-            val intent = Intent(requireActivity(), MainActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
+            val username = binding.usernameInput.text.toString()
+            val password = binding.passwordInput.text.toString()
+            viewModel.login(username, password)
         }
     }
 
