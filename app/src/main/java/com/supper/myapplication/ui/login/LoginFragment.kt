@@ -29,11 +29,18 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
+        viewModel.loginResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                val intent = Intent(requireActivity(), MainActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+            }
+        }
+
         binding.loginButton.setOnClickListener {
-            // TODO: Implement login logic
-            val intent = Intent(requireActivity(), MainActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
+            val username = binding.usernameInput.text.toString()
+            val password = binding.passwordInput.text.toString()
+            viewModel.login(username, password)
         }
     }
 
